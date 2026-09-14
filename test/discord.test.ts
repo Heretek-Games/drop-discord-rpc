@@ -6,6 +6,7 @@ import Plugin, {
   type DiscordFrame,
   type DiscordTransport,
   DiscordIpcClient,
+  MAX_FRAME_BYTES,
   buildPresence,
   decodeFrames,
   discordSocketPaths,
@@ -52,6 +53,10 @@ class FakeTransport implements DiscordTransport {
   emitFrame(op: number, data: unknown): void {
     const frame = encodeFrame(op, data);
     for (const listener of this.dataListeners) listener(frame);
+  }
+
+  emitRaw(bytes: Uint8Array): void {
+    for (const listener of this.dataListeners) listener(bytes);
   }
 
   frames(): DiscordFrame[] {
@@ -116,6 +121,41 @@ test("encodeFrame/decodeFrames round-trip including partial chunks", () => {
   const partial = decodeFrames(merged.subarray(0, first.length + 4));
   assert.equal(partial.frames.length, 1);
   assert.equal(partial.rest.length, 4);
+});
+
+test("decodeFrames rejects oversized and negative frame lengths", () => {
+  const header = new Uint8Array(8);
+  const view = new DataView(header.buffer);
+  view.setInt32(0, 1, true);
+
+  view.setInt32(4, MAX_FRAME_BYTES + 1, true);
+  assert.throws(() => decodeFrames(header), /exceeds maximum/);
+
+  view.setInt32(4, -1, true);
+  assert.throws(() => decodeFrames(header), /Invalid Discord IPC frame length/);
+
+  // A custom cap is honored.
+  view.setInt32(4, 10, true);
+  assert.throws(() => decodeFrames(header, 8), /exceeds maximum 8/);
+});
+
+test("client drops the connection on an oversized frame header", async () => {
+  const fake = new FakeTransport();
+  const client = clientFor(fake);
+  await client.connect();
+  fake.emitFrame(1, { evt: "READY" });
+  await tick();
+  assert.equal(client.isReady, true);
+
+  const header = new Uint8Array(8);
+  const view = new DataView(header.buffer);
+  view.setInt32(0, 1, true);
+  view.setInt32(4, MAX_FRAME_BYTES + 1, true);
+  fake.emitRaw(header);
+  await tick();
+
+  assert.equal(fake.closed, true);
+  assert.equal(client.isReady, false);
 });
 
 test("discordSocketPaths follows the platform conventions", () => {
