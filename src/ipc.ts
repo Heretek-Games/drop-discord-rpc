@@ -123,7 +123,7 @@ export function discordSocketPaths(
 ): string[] {
   const indexes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
   if (platform === "win32") {
-    return indexes.map((index) => `\\\\.\\pipe\\discord-ipc-${index}`);
+    return indexes.map((index) => String.raw`\\.\pipe\discord-ipc-${index}`);
   }
   const bases = new Set<string>();
   if (env.XDG_RUNTIME_DIR) {
@@ -132,8 +132,18 @@ export function discordSocketPaths(
   }
   bases.add(env.TMPDIR || "/tmp");
   return [...bases].flatMap((base) =>
-    indexes.map((index) => `${base.replace(/\/+$/, "")}/discord-ipc-${index}`),
+    indexes.map(
+      (index) => `${stripTrailingSlashes(base)}/discord-ipc-${index}`,
+    ),
   );
+}
+
+function stripTrailingSlashes(value: string): string {
+  let result = value;
+  while (result.endsWith("/")) {
+    result = result.slice(0, -1);
+  }
+  return result;
 }
 
 export interface DiscordActivity {
@@ -164,7 +174,13 @@ interface ReadyWaiter {
 function randomNonce(): string {
   const cryptoApi = globalThis.crypto as Crypto | undefined;
   if (cryptoApi?.randomUUID) return cryptoApi.randomUUID();
-  return `nonce-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  if (cryptoApi?.getRandomValues) {
+    const bytes = new Uint8Array(16);
+    cryptoApi.getRandomValues(bytes);
+    return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0"))
+      .join("");
+  }
+  throw new Error("No cryptographically secure random source is available");
 }
 
 /**
