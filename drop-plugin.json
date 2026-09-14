@@ -1,0 +1,20 @@
+{
+  "id": "drop-discord-rpc",
+  "name": "Discord Rich Presence",
+  "version": "0.1.0",
+  "description": "Publishes game presence to the Discord IPC socket",
+  "author": "Heretek Games",
+  "apiVersion": 2,
+  "trust": "trusted",
+  "storageVersion": 1,
+  "capabilities": [
+    "ui:slot",
+    "client:ws",
+    "system:command",
+    "game:launch-hook"
+  ],
+  "targets": [
+    "client"
+  ],
+  "entry": "dist/src/index.js"
+}
