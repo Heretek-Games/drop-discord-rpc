@@ -8,9 +8,6 @@
   "trust": "trusted",
   "storageVersion": 1,
   "capabilities": [
-    "ui:slot",
-    "client:ws",
-    "system:command",
     "game:launch-hook"
   ],
   "targets": [
