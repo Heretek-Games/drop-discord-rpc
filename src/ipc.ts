@@ -12,6 +12,13 @@ export interface DiscordFrame {
   data: unknown;
 }
 
+/**
+ * Maximum accepted Discord IPC frame body size. Frames larger than this are
+ * rejected instead of buffered, so a malicious local process cannot exhaust
+ * memory by advertising an enormous length.
+ */
+export const MAX_FRAME_BYTES = 4 * 1024 * 1024;
+
 /** Encodes one Discord IPC frame: int32 opcode + int32 length + JSON body (LE). */
 export function encodeFrame(op: number, payload: unknown): Uint8Array {
   const body = new TextEncoder().encode(JSON.stringify(payload ?? {}));
@@ -27,7 +34,10 @@ export function encodeFrame(op: number, payload: unknown): Uint8Array {
  * Decodes as many complete frames as possible, returning trailing bytes that
  * belong to an incomplete frame.
  */
-export function decodeFrames(buffer: Uint8Array): {
+export function decodeFrames(
+  buffer: Uint8Array,
+  maxFrameBytes: number = MAX_FRAME_BYTES,
+): {
   frames: DiscordFrame[];
   rest: Uint8Array;
 } {
@@ -41,7 +51,15 @@ export function decodeFrames(buffer: Uint8Array): {
     );
     const op = view.getInt32(0, true);
     const length = view.getInt32(4, true);
-    if (length < 0 || buffer.length - offset - 8 < length) break;
+    if (length < 0) {
+      throw new Error(`Invalid Discord IPC frame length: ${length}`);
+    }
+    if (length > maxFrameBytes) {
+      throw new Error(
+        `Discord IPC frame length ${length} exceeds maximum ${maxFrameBytes}`,
+      );
+    }
+    if (buffer.length - offset - 8 < length) break;
     const body = buffer.subarray(offset + 8, offset + 8 + length);
     frames.push({
       op,
@@ -284,7 +302,20 @@ export class DiscordIpcClient {
     const merged = new Uint8Array(this.buffer.length + chunk.length);
     merged.set(this.buffer);
     merged.set(chunk, this.buffer.length);
-    const { frames, rest } = decodeFrames(merged);
+    let decoded: { frames: DiscordFrame[]; rest: Uint8Array };
+    try {
+      decoded = decodeFrames(merged);
+    } catch {
+      // Protocol violation (e.g. an oversized frame header): drop the
+      // connection rather than buffering an unbounded amount of data.
+      const transport = this.transport;
+      this.transport = null;
+      this.buffer = new Uint8Array(0);
+      this.handleClose();
+      transport?.close();
+      return;
+    }
+    const { frames, rest } = decoded;
     this.buffer = rest;
     for (const frame of frames) this.handleFrame(frame);
   }
