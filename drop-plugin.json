@@ -8,34 +8,41 @@
   "trust": "trusted",
   "storageVersion": 1,
   "capabilities": [
-    "game:launch-hook"
+    "game:launch-hook",
+    "client:storage"
   ],
   "targets": [
     "client"
   ],
   "entry": "dist/src/index.js",
-  "checksum": "b15e09b162926823dfb8eac9d7bf48bc7f3417f521c5a48ce7c0cb352898cf44",
+  "checksum": "06b2cd16e633d459e93f79c31825d798adee8dadf3d0678c6fa4de463ed47b46",
   "files": {
     ".github/dependabot.yml": "fe156952d1952825377de8e48c90563a3ac19bb95a6e0ced8a2f498a0f20fdf6",
     ".github/workflows/ci.yml": "60a33a67813097e4744a54b21d8af35e6c0254e56001123a69f34ccf65d1fa8b",
-    ".gitignore": "e8bc935ce727f1809c792f4c5d26c5fc75ba2b7df7fc9390c56c8892f6a6007f",
+    ".github/workflows/release.yml": "08a97b00cac41d321307cb894819c15d357300f950ec01cd51375a12e6604e10",
+    ".gitignore": "455edc14aa6727e0e1c9bf889ca4244f3334bfa8ee3b57af17cb83f9c395ea46",
+    ".sdk-scope.json": "02aa703354ff6c6a460d6dd0d9ddabd6ce88ec628f0f963b6afa58eaf601e30e",
     "AGENTS.md": "2d2f8abaea60f0c98addfe6174d3c8e6206f7b56a328b74420a85413224b74b2",
     "CLAUDE.md": "3b2c8a6a80fe79fa9ee0680b86d2e84ce0b9255d3dc43eccd4e2fce59064c7da",
-    "dist/src/index.d.ts": "956476c60f68995fe50ce1738455257588a9e45c0b6580b193e5c2a20f928921",
-    "dist/src/index.js": "b15e09b162926823dfb8eac9d7bf48bc7f3417f521c5a48ce7c0cb352898cf44",
+    "dist/src/index.d.ts": "e4f74f786613164dd37fdbb1055473cc17a45d152d1fad8b8870de196f58cc5b",
+    "dist/src/index.js": "06b2cd16e633d459e93f79c31825d798adee8dadf3d0678c6fa4de463ed47b46",
     "dist/src/ipc.d.ts": "a66c2920dd2a701a0d41291dfa43104c80d4f47604fa2217720c8ab4239510bc",
     "dist/src/ipc.js": "f2b1d4e005187360761b2cf89041ff055927ab569194464f6cabd0373417a912",
     "dist/test/discord.test.d.ts": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
-    "dist/test/discord.test.js": "ed965cac0cdd3685c4ab20b054e4804a6bdd5c8bc65d5d50ad851dce876b5384",
+    "dist/test/discord.test.js": "1a86d490df54bd07f3c175e11d14d5324a62c854a76b760970040e887f2a12d6",
+    "dist/test/manifest.test.d.ts": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+    "dist/test/manifest.test.js": "323427b1b12a73a07c3f1a771ea6a9da96ee7790f4638b2eded53a45bb15e648",
     "eslint.config.mjs": "4cdf67d5a07b1a089d8f39e842a7de7532eb519752d60fe5ac706f42fb7bdc6f",
     "GEMINI.md": "3b2c8a6a80fe79fa9ee0680b86d2e84ce0b9255d3dc43eccd4e2fce59064c7da",
-    "package-lock.json": "7f9e3b7aaf5e9964386868c25fd69ff52af1d49dbf807d4efa46efa6e1c837d6",
-    "package.json": "d975bf27ca21c54a7eeb5b060be33fe1c001161523b9cacb6f72514517b213ea",
+    "package-lock.json": "396d160f37bd175aa37894d7b6cfa682f86002c18d879b525d1ceee74e19e360",
+    "package.json": "f4a6d5630aa91cbdec528c1eb9fcc1ec81a008c841d4d61878528f04d556b0f7",
     "README.md": "8e609cc2d44bf81c1329f82005df2c817ffb4db556f58e11ed667b94dfb81afc",
+    "scripts/switch-sdk-scope.mjs": "cee6513f66458bb65746bb4c27d749f0ab7d28bdb09634acbdda5e8acf4bda5b",
     "SECURITY.md": "1ed84c5e2293a1bda1e0d1650df39f5c03dba9a18ee6d8acff78cc10a6897d2d",
-    "src/index.ts": "e6dde98f3523a89c20b748de2aa4a0d04f36e1dfd6e8218c3bf40a5498f8948b",
+    "src/index.ts": "4a451f682b4321beada43097755661bfb06604b9d6c37e17f4c8b441b0319012",
     "src/ipc.ts": "add34e7ce32d781f6abbc66c04a462565cb5f0ac00b9984ee1348af076884a9c",
-    "test/discord.test.ts": "a821296bf1284c946434fc0177b386c2755b07ff76f5145a77ebffb566bab8ae",
+    "test/discord.test.ts": "4d5afae0d4dce697c37e65e0dd2b76a626444878c2bb334dc441dcbe4e156aaf",
+    "test/manifest.test.ts": "ee922ae8eb97cc3fbbe288147cb8400600b529f20418cc80899f186323d4a814",
     "tsconfig.json": "e67d6d62d5af3c653c4d1af30dea94d529c721708e54bd8609d748be627e79e5"
   }
 }

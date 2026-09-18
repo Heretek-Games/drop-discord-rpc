@@ -50,7 +50,10 @@ export default class DiscordRpcPlugin implements ClientPlugin {
     name: "Discord Rich Presence",
     version: "0.1.0",
     apiVersion: 2,
-    capabilities: ["game:launch-hook" as const],
+    capabilities: [
+      "game:launch-hook" as const,
+      "client:storage" as const,
+    ],
   };
 
   private activeClient: DiscordIpcClient | null = null;

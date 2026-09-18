@@ -87,6 +87,7 @@ const tick = () => new Promise((resolve) => setTimeout(resolve, 0));
 test("drop-discord-rpc registers launch and cleanup hooks", async () => {
   const ctx = new MockClientPluginContext("drop-discord-rpc", [
     "game:launch-hook",
+    "client:storage",
   ]);
   await new Plugin().init(ctx);
   assert.equal(ctx.launchHooks.length, 2);
@@ -236,6 +237,7 @@ test("plugin runs the IPC client on launch and clears on post-exit", async () =>
   const fake = new FakeTransport();
   const ctx = new MockClientPluginContext("drop-discord-rpc", [
     "game:launch-hook",
+    "client:storage",
   ]);
   await ctx.storage.set("discord_client_id", "999");
   await new Plugin({
@@ -272,6 +274,7 @@ test("plugin skips IPC when no client id is configured", async () => {
   let created = 0;
   const ctx = new MockClientPluginContext("drop-discord-rpc", [
     "game:launch-hook",
+    "client:storage",
   ]);
   await new Plugin({
     transportFactory: () => {
